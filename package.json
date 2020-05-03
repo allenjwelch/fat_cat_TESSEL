@@ -1,0 +1,26 @@
+{
+    "name": "fat_cat_TESSEL",
+    "version": "1.0.0",
+    "description": "device code for tessel 2 fat cat web based cat feeder",
+    "main": "server.js",
+    "scripts": {
+        "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+        "start:prod": "node server.js",
+        "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+        "client": "cd client && npm run start",
+        "install": "cd client && npm install",
+        "build": "cd client && npm run build",
+        "heroku-postbuild": "npm run build && npm run-script seed"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "concurrently": "^5.2.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.16.4",
+        "if-env": "^1.0.4",
+        "nodejs-websocket": "^1.7.2",
+        "nodemon": "^2.0.3"
+    }
+}
