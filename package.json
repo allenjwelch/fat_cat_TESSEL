@@ -15,8 +15,8 @@
     "dependencies": {
         "dotenv": "^8.2.0",
         "express": "^4.16.4",
-        "nodejs-websocket": "^1.7.2",
         "johnny-five": "^1.0.0",
+        "socket.io": "^2.3.0",
         "tessel-io": "^1.2.0",
         "twilio": "^3.42.2"
     },
