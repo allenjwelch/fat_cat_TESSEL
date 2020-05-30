@@ -11,12 +11,14 @@ const routes = require("./routes/index");
 
 const app = express();
 app.use(routes);
+app.use('/', express.static(__dirname + '/client/build/index.html'));
+app.use('/', express.static(__dirname + '/client/build'));
 
 const server = http.createServer(app);
 const socketIO = socketIo(server);
 
 const board = new five.Board({
-  io: new Tessel()
+  // io: new Tessel()
 });
 
 let interval;
@@ -73,6 +75,43 @@ const getFoodLevelAndEmit = socket => {
   // Emitting a new message. Will be consumed by the client
   socket.emit("foodLevel", foodStatusMsg);
 };
+
+// const leds = ['a2', 'a3', 'a4'];
+
+    // console.log(leds);
+
+    // const sleep = ms => {
+    // return new Promise(resolve => setTimeout(resolve, ms))
+    // }
+
+    // const runLed = (led, index) => {
+    // if (index === leds.length - 1) {
+    //     console.log(led, ' - blink');
+    // } else {
+    //     console.log(led, ' - on');
+    // }
+    // return sleep(2000).then(v => console.log(led, ' - off'))
+    // }
+
+    // const forLoop = async _ => {
+    // console.log('Start')
+
+    // for (let index = 0; index < leds.length; index++) {
+    //     const led = leds[index]
+    //     await runLed(led, index);
+    // }
+
+    // await runServo();
+
+    // console.log('End')
+    // }
+
+    // const runServo = async () => {
+    // console.log('servo - ON')
+    // return sleep(2000).then(v => console.log('servo - OFF'))
+    // }
+
+    // forLoop();
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
