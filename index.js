@@ -1,8 +1,20 @@
 const express = require('express');
 const http = require("http");
 const socketIo = require("socket.io");
-const Tessel = require("tessel-io");
 const five = require("johnny-five");
+
+let Tessel = null;
+let board;
+let interval;
+
+try {
+	Tessel = require('tessel-io');
+	board = new five.Board({
+		io: new Tessel()
+	});
+} catch (e) {
+	console.log('Tessel board not initialized: ', e)
+}
 
 require('dotenv').config();
 
@@ -17,101 +29,102 @@ app.use('/', express.static(__dirname + '/client/build'));
 const server = http.createServer(app);
 const socketIO = socketIo(server);
 
-const board = new five.Board({
-  // io: new Tessel()
-});
+if (board) {
+	board.on("ready", (e) => {
+		const leds = new five.Leds([['a6', 'a5', 'a4']]);
 
-let interval;
+		const getFoodLevelAndEmit = socket => {
+			let foodLevel = 10;
+			let foodStatusMsg = 'Good';
+			if (foodLevel > 5) {
+				foodStatusMsg = 'Low'
+			}
+			// Emitting a new message. Will be consumed by the client
+			socket.emit("foodLevel", foodStatusMsg);
+		};
 
-board.on("ready", () => {
-  const led = new five.Led("a5");
+		socketIO.on("connection", (socket) => {
+			console.log("New client connected");
+			socket.emit("status", 'Ready');
 
-  socketIO.on("connection", (socket) => {
-    console.log("New client connected");
-    socket.emit("status", 'Ready');
+			if (interval) {
+				clearInterval(interval);
+			}
+			interval = setInterval(() => getFoodLevelAndEmit(socket), 1000);
+			socket.on("disconnect", () => {
+				console.log("Client disconnected");
+				clearInterval(interval);
+			});
 
-    if (interval) {
-      clearInterval(interval);
-    }
-    interval = setInterval(() => getFoodLevelAndEmit(socket), 1000);
-    socket.on("disconnect", () => {
-      console.log("Client disconnected");
-      clearInterval(interval);
-    });
+			socket.on('feed', (msg) => {
+				console.log('feed that bitch')
+				console.log('portion size: ', msg)
+				socket.emit("status", 'Feeding...');
 
-    socket.on('feed', (msg) => {
-      console.log('feed that bitch')
-      console.log('portion size: ', msg)
-      socket.emit("status", 'Feeding...');
 
-      
-      let timer;
+				let timer;
 
-      if (msg === 'extra') {
-        timer = 5000;
-      } else if (msg === 'snack') {
-        timer = 1000;
-      } else {
-        timer = 3000;
-      }
+				if (msg === 'extra') {
+					timer = 5000;
+				} else if (msg === 'snack') {
+					timer = 1000;
+				} else {
+					timer = 3000;
+				}
 
-      led.on();
+				led.on();
 
-      setTimeout(() => {
-        led.off()
-        socket.emit("status", 'Ready');
-      }, timer)
+				setTimeout(() => {
+					led.off()
+					socket.emit("status", 'Ready');
+				}, timer)
 
-    })
-  });
-});
+			})
+		});
 
-const getFoodLevelAndEmit = socket => {
-  let foodLevel = 10; 
-  let foodStatusMsg = 'Good';
-  if (foodLevel > 5) {
-    foodStatusMsg = 'Low'
-  }
-  // Emitting a new message. Will be consumed by the client
-  socket.emit("foodLevel", foodStatusMsg);
-};
+		const sleep = ms => {
+			return new Promise(resolve => setTimeout(resolve, ms))
+		}
 
-// const leds = ['a2', 'a3', 'a4'];
+		const runLed = (led, index) => {
+			if (index === leds.length - 1) {
+				console.log('led - blink');
+				led.blink();
+			} else {
+				console.log('led - on');
+				led.on();
+			}
+			return sleep(2000).then(v => {
+				console.log('led - off');
+				led.off()
+			})
+		}
 
-    // console.log(leds);
+		const forLoop = async _ => {
+			console.log('Start')
 
-    // const sleep = ms => {
-    // return new Promise(resolve => setTimeout(resolve, ms))
-    // }
+			for (let index = 0; index < leds.length; index++) {
+				const led = leds[index]
+				await runLed(led, index);
+			}
 
-    // const runLed = (led, index) => {
-    // if (index === leds.length - 1) {
-    //     console.log(led, ' - blink');
-    // } else {
-    //     console.log(led, ' - on');
-    // }
-    // return sleep(2000).then(v => console.log(led, ' - off'))
-    // }
+			await runServo();
 
-    // const forLoop = async _ => {
-    // console.log('Start')
+			console.log('End')
+		}
 
-    // for (let index = 0; index < leds.length; index++) {
-    //     const led = leds[index]
-    //     await runLed(led, index);
-    // }
+		const runServo = async () => {
+			console.log('servo - ON')
+			return sleep(2000).then(v => console.log('servo - OFF'))
+		}
 
-    // await runServo();
+		forLoop();
 
-    // console.log('End')
-    // }
+	});
 
-    // const runServo = async () => {
-    // console.log('servo - ON')
-    // return sleep(2000).then(v => console.log('servo - OFF'))
-    // }
+	server.listen(PORT, () => console.log(`Listening on 192.168.0.21:${PORT}`));
 
-    // forLoop();
-
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+} else {
+	server.listen(PORT, () => console.log(`Listening on http://127.0.0.1:8080`));
+}
 
