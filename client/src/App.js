@@ -24,15 +24,15 @@ const App = () => {
 	const socket = socketIOClient(tesselIP);
 
 	useEffect(() => {
-		socket.on("status", data => {
-			console.log(data)
+		socket.on('status', data => {
+			console.log('status- ',data)
 			setStatus(data);
 		});
 		// socket.on("foodLevel", data => {
 		// 	setFoodLevel(data);
 		// });
 
-		console.log(tesselIP);
+		console.log('tesselIP - ', tesselIP);
 	}, []);
 
 	const sendFeed = () => {
@@ -82,12 +82,12 @@ const App = () => {
 					/>
 
 					<div className="additional-info">
-						{/* <div className="status">
+						<div className="status">
 							<p>Status: <span>{status}</span></p>
-							<p>Food Level: <span className={foodLevel === 'Low' && 'low'}>
+							{/* <p>Food Level: <span className={foodLevel === 'Low' && 'low'}>
 								{foodLevel}
-							</span></p>
-						</div> */}
+							</span></p> */}
+						</div>
 
 						<DropDown
 							className="select-feed"
