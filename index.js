@@ -32,8 +32,9 @@ const socketIO = socketIo(server);
 
 if (board) {
 	board.on("ready", (e) => {
-		const leds = new five.Leds(['a6', 'a5', 'a4']);
-		const feedLed = new five.Led('a4');
+		const leds = new five.Leds(['b5', 'b4']);
+		const feedLed = new five.Led('b6');
+		const button = new five.Button("a2");
 
 		// const getFoodLevelAndEmit = socket => {
 		// 	let foodLevel = 10;
@@ -47,6 +48,9 @@ if (board) {
 		// 	// Emitting a new message. Will be consumed by the client
 		// 	socket.emit("foodLevel", foodStatusMsg);
 		// };
+
+		button.on("press", () => feedLed.on());
+		button.on("release", () => feedLed.off());
 
 		socketIO.on("connection", (socket) => {
 			console.log("New client connected");
@@ -79,74 +83,65 @@ if (board) {
 
 				console.log('timer - ', timer);
 
-				feedLed.on();
+				// feedLed.on();
+				// runLeds();
+				forLoop();
 
-				// setTimeout(() => {
-				// 	socket.emit("status", 'Ready');
-				// }, timer)
+
+				setTimeout(() => {
+					console.log('feeding complete!')
+					socket.emit("status", 'Ready');
+					// feedLed.off();
+				}, timer)
 
 			})
 		});
 
-		const runLeds = () => {
-			for (let index = 0; index < leds.length; index++) {
-				const led = leds[index]
-				// if (index === leds.length - 1) {
-				// 	console.log('led - blink');
-				// 	led.blink();
-				// } else {
-				// 	console.log('led - on');
-				// 	led.on();
-				// }
-
-				led.on()
-
-				// board.wait(2000, () => {
-				// 	led.off();
-				// })
-				
-			}
-		}
-
-		// runLeds();
-
-		// const sleep = ms => {
-		// 	return new Promise(resolve => setTimeout(resolve, ms))
-		// }
-
-		// const runLed = (led, index) => {
-		// 	if (index === leds.length - 1) {
-		// 		console.log('led - blink');
-		// 		led.blink();
-		// 	} else {
-		// 		console.log('led - on');
-		// 		led.on();
-		// 	}
-		// 	return sleep(2000).then(v => {
-		// 		console.log('led - off');
-		// 		led.off()
-		// 	})
-		// }
-
-		// const forLoop = async _ => {
-		// 	console.log('Start')
-
+		// const runLeds = () => {
 		// 	for (let index = 0; index < leds.length; index++) {
 		// 		const led = leds[index]
-		// 		await runLed(led, index);
+		// 		board.wait(1000, () => {
+		// 			led.on();
+
+		// 			board.wait(1000, () => {
+		// 				led.off();
+		// 			})
+		// 		})
 		// 	}
-
-		// 	await runServo();
-
-		// 	console.log('End')
 		// }
 
-		// const runServo = async () => {
-		// 	console.log('servo - ON')
-		// 	return sleep(2000).then(v => console.log('servo - OFF'))
-		// }
+		
 
-		// forLoop();
+		const sleep = ms => {
+			return new Promise(resolve => setTimeout(resolve, ms))
+		}
+
+		const runLed = (led) => {
+				console.log('led - on');
+				led.on();
+			return sleep(2000).then(v => {
+				console.log('led - off');
+				led.off()
+			})
+		}
+
+		const forLoop = async _ => {
+			console.log('Start')
+
+			for (let index = 0; index < leds.length; index++) {
+				const led = leds[index]
+				await runLed(led);
+			}
+
+			await runServo();
+
+			console.log('End')
+		}
+
+		const runServo = async () => {
+			console.log('servo - ON')
+			return sleep(2000).then(v => console.log('servo - OFF'))
+		}
 
 	});
 

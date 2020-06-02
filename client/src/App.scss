@@ -37,6 +37,7 @@ body {
         .additional-info {
             display: flex;
             justify-content: center;
+            flex-direction: column;
 
             div {
                 margin: 10px 0px;

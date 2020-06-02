@@ -38,6 +38,10 @@ const App = () => {
 	const sendFeed = () => {
 		console.log('sending feed...')
 		socket.emit('feed', portionSize)
+		socket.on('status', data => {
+			console.log('status- ',data)
+			setStatus(data);
+		});
 	}
 
 	const selectPortion = (e) => {
