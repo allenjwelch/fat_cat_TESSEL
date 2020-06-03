@@ -6,8 +6,9 @@
     "scripts": {
         "deploy": "echo 'Deploying via USB...' && t2 push --usb index.js",
         "build": "cd client && npm run build",
-        "start:device": "echo 'Running on Tessel device via USB...' && t2 run --usb index.js",
-        "start:local": "echo 'Starting web UI...' && node index.js",
+        "start:usb": "echo 'Running on Tessel device via USB...' && t2 run --usb index.js",
+        "start:wifi": "echo 'Running on Tessel device via wifi...' && t2 run index.js",
+        "start:ui": "echo 'Starting web UI...' && node index.js",
         "test": "jest",
         "test:watch": "npm test -- --watch"
     },

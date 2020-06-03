@@ -32,9 +32,14 @@ const socketIO = socketIo(server);
 
 if (board) {
 	board.on("ready", (e) => {
-		const leds = new five.Leds(['b5', 'b4']);
-		const feedLed = new five.Led('b6');
-		const button = new five.Button("a2");
+		const leds = new five.Leds(['b6', 'b5', 'b4']);
+		const button = new five.Button('a2');
+		const servo = new five.Servo({
+			pin: 'a6', 
+			type: 'continuous'
+		});
+
+		leds.off();
 
 		// const getFoodLevelAndEmit = socket => {
 		// 	let foodLevel = 10;
@@ -49,8 +54,14 @@ if (board) {
 		// 	socket.emit("foodLevel", foodStatusMsg);
 		// };
 
-		button.on("press", () => feedLed.on());
-		button.on("release", () => feedLed.off());
+		button.on("press", () => {
+			servo.cw(1);
+			leds[2].on();
+		}); 
+		button.on("release", () => {
+			servo.stop();
+			leds.off();
+		});
 
 		socketIO.on("connection", (socket) => {
 			console.log("New client connected");
@@ -66,52 +77,22 @@ if (board) {
 			});
 
 			socket.on('feed', (msg) => {
-				console.log('feed that bitch')
 				console.log('portion size: ', msg)
 				socket.emit('status', 'Feeding...');
 
-
 				let timer;
-
 				if (msg === 'extra') {
-					timer = 5000;
-				} else if (msg === 'snack') {
-					timer = 1000;
+					timer = 5000; // need to find correct timing for rotation
 				} else {
-					timer = 3000;
+					timer = 3000; // need to find correct timing for rotation
 				}
 
 				console.log('timer - ', timer);
 
-				// feedLed.on();
-				// runLeds();
-				forLoop();
-
-
-				setTimeout(() => {
-					console.log('feeding complete!')
-					socket.emit("status", 'Ready');
-					// feedLed.off();
-				}, timer)
-
+				feedLoop(timer, socket);
 			})
 		});
-
-		// const runLeds = () => {
-		// 	for (let index = 0; index < leds.length; index++) {
-		// 		const led = leds[index]
-		// 		board.wait(1000, () => {
-		// 			led.on();
-
-		// 			board.wait(1000, () => {
-		// 				led.off();
-		// 			})
-		// 		})
-		// 	}
-		// }
-
 		
-
 		const sleep = ms => {
 			return new Promise(resolve => setTimeout(resolve, ms))
 		}
@@ -119,28 +100,38 @@ if (board) {
 		const runLed = (led) => {
 				console.log('led - on');
 				led.on();
-			return sleep(2000).then(v => {
+			return sleep(1000).then(v => {
 				console.log('led - off');
 				led.off()
 			})
 		}
 
-		const forLoop = async _ => {
-			console.log('Start')
+		const feedLoop = async (timer, socket) => {
+			console.log('Start feedLoop...')
 
 			for (let index = 0; index < leds.length; index++) {
 				const led = leds[index]
 				await runLed(led);
 			}
 
-			await runServo();
+			await runServo(timer);
 
-			console.log('End')
+			console.log('feeding complete!')
+			socket.emit('status', 'Ready');
+
+			leds.off();
+			console.log('End feedLoop.')
 		}
 
-		const runServo = async () => {
+		const runServo = async (timer) => {
 			console.log('servo - ON')
-			return sleep(2000).then(v => console.log('servo - OFF'))
+			servo.cw(1);
+			leds[2].on();
+			return sleep(timer).then(v => {
+				console.log('servo - OFF'); 
+				servo.stop();
+				leds.off();
+			})
 		}
 
 	});

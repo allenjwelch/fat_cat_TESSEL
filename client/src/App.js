@@ -16,7 +16,7 @@ const logoIndex = Math.floor(Math.random() * Math.floor(logoArray.length));
 
 const App = () => {
 
-	const [status, setStatus] = useState('Ready');
+	const [status, setStatus] = useState('Disconnected');
 	// const [foodLevel, setFoodLevel] = useState('Low');
 	const [portionSize, setPortionSize] = useState('normal');
 	const [loading, setLoading] = useState(false);
@@ -51,8 +51,6 @@ const App = () => {
 
 	const checkAuth = (e) => {
 		const input = e.target.value;
-		console.log(input);
-		console.log(process.env.REACT_APP_PASSCODE)
 		if (input === process.env.REACT_APP_PASSCODE) {
 			setLoading(true)
 			setEnableFeed(true);
@@ -103,7 +101,6 @@ const App = () => {
 				</div>
 			)
 		}
-		
 	};
 
 	return (
