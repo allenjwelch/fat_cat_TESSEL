@@ -5,8 +5,10 @@
     "main": "index.js",
     "scripts": {
         "deploy": "echo 'Deploying via USB...' && t2 push --usb index.js",
-        "start:device": "echo 'Running on Tessel device via USB...' && t2 run --usb index.js",
-        "start": "echo 'Starting web UI...' && node index.js",
+        "build": "cd client && npm run build",
+        "start:usb": "echo 'Running on Tessel device via USB...' && t2 run --usb index.js",
+        "start:wifi": "echo 'Running on Tessel device via wifi...' && t2 run index.js",
+        "start:ui": "echo 'Starting web UI...' && node index.js",
         "test": "jest",
         "test:watch": "npm test -- --watch"
     },
@@ -15,14 +17,14 @@
     "dependencies": {
         "dotenv": "^8.2.0",
         "express": "^4.16.4",
-        "johnny-five": "^1.0.0",
+        "johnny-five": "^1.4.0",
         "socket.io": "^2.3.0",
-        "tessel-io": "^1.2.0",
+        "t2-cli": "^0.1.23",
+        "tessel-io": "^1.3.0",
         "twilio": "^3.42.2"
     },
     "devDependencies": {
         "eslint-plugin-jest": "^23.2.0",
-        "jest": "^24.9.0",
-        "t2-cli": "^0.1.23"
+        "jest": "^23.6.0"
     }
 }
