@@ -2,10 +2,22 @@ const express = require('express');
 const http = require("http");
 const socketIo = require("socket.io");
 const five = require("johnny-five");
+// const twilio = require("twilio");
+// const CONFIG = require('./config.json');
+
+require('dotenv').config();
 
 let Tessel = null;
 let board;
 let interval;
+
+// const accountSid = CONFIG.twilio.accountSid; 
+// const authToken = CONFIG.twilio.authToken; 
+
+// const sender = CONFIG.twilio.senderNumber; 
+// const recipient = CONFIG.twilio.recepientNumber; 
+
+// const client = new twilio(accountSid, authToken);
 
 try {
 	Tessel = require('tessel-io');
@@ -14,17 +26,24 @@ try {
 	});
 } catch (e) {
 	console.log('Tessel board not initialized');
+	// const details = {
+	// 	body: `Fat Cat ERROR: Tessel board not initialized`,
+	// 	from: sender,
+	// 	to: recipient,
+	// };
+  
+	//   client.messages.create(details, error => {
+	// 	if (error) {
+	// 	  console.error(error.message);
+	// 	}
+	// });
 }
 
-require('dotenv').config();
-
-// const PORT = process.env.PORT || 4001;
 const PORT = process.env.PORT || 8080;
 // const routes = require("./routes/index");
+// app.use(routes);
 
 const app = express();
-// app.use(routes);
-// app.use('/', express.static(__dirname + '/client/build/index.html'));
 app.use('/', express.static(__dirname + '/client/build'));
 
 const server = http.createServer(app);
@@ -135,6 +154,22 @@ if (board) {
 		}
 
 	});
+
+	// board.on("fail", function(event) {
+	// 	const details = {
+	// 		body: `Fat Cat ERROR: ${event.class}: ${event.message}`,
+	// 		from: sender,
+	// 		to: recipient,
+	// 	};
+	  
+	// 	  client.messages.create(details, error => {
+	// 		if (error) {
+	// 		  console.error(error.message);
+	// 		}
+	// 	});
+		
+	// 	console.error("%s sent a 'fail' message: %s", event.class, event.message);
+	//   });
 
 	server.listen(PORT, () => console.log(`Listening on 192.168.0.21:${PORT}`));
 
