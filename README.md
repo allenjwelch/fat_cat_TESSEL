@@ -1,6 +1,6 @@
 # Fat Cat (Tessel)
 Fat Cat is an IoT cat feeder built using a Tessel 2 hosting a custom user interface. While on the same network, the interface provides an option to select a portion size and activate the food dispenser.  
-![Fat Cat](https://i.imgur.com/hHxNI6l.png?1)
+![Fat Cat](https://i.imgur.com/hHxNI6ll.png?4)
 
 ## Prerequisites / Dependencies
 To duplicate you will need the following things properly installed on your computer.
