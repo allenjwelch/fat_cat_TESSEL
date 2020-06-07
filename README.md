@@ -18,8 +18,8 @@ To duplicate you will need the following things properly installed on your compu
 
 
 ## Parts and Materials
-
-| ------------- |:-------------:|
+| Link | Image |
+| ---- | :----: |
 [Parallax Continuous Rotation Servo](https://www.sparkfun.com/products/16048) | ![Servo](https://i.imgur.com/Eplrtjp.jpg)
 [Dry Food Dispenser](https://www.amazon.com/gp/product/B009Q8PZMK/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Dispenser](https://i.imgur.com/Tdu27sQ.jpg)
 [Tessel 2](https://www.sparkfun.com/products/13841) | ![Tessel 2](https://i.imgur.com/EFFAlj4.jpg)
@@ -30,3 +30,9 @@ Soldering Iron | ![Soldering Iron](https://i.imgur.com/e4BuTGI.jpg)
 [Resistor 100 Ohm](https://www.sparkfun.com/products/14493) | 
 [LEDs](https://www.sparkfun.com/products/12062) |
 [Button](https://www.sparkfun.com/products/14460) | 
+
+  
+## Final Product 
+![FatCat1](https://i.imgur.com/PrWdYnD.jpg?1)
+![FatCat2](https://i.imgur.com/TFwMps6.jpg?1)
+![FatCat3](https://i.imgur.com/Yl06odx.jpg?2)
