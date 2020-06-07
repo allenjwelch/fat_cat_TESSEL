@@ -1,5 +1,5 @@
 # Fat Cat (Tessel)
-[Fat Cat](https://i.imgur.com/hHxNI6l.png?1)
+![Fat Cat](https://i.imgur.com/hHxNI6l.png?1)
 
 ## Prerequisites / Dependencies
 To duplicate you will need the following things properly installed on your computer.
@@ -18,6 +18,8 @@ To duplicate you will need the following things properly installed on your compu
 
 
 ## Parts and Materials
+
+
 [Parallax Continuous Rotation Servo](https://www.sparkfun.com/products/16048) | ![Servo](https://i.imgur.com/Eplrtjp.jpg)
 [Dry Food Dispenser](https://www.amazon.com/gp/product/B009Q8PZMK/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Dispenser](https://i.imgur.com/Tdu27sQ.jpg)
 [Tessel 2](https://www.sparkfun.com/products/13841) | ![Tessel 2](https://i.imgur.com/EFFAlj4.jpg)
