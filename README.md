@@ -20,11 +20,11 @@ To duplicate you will need the following things properly installed on your compu
 ## Parts and Materials
 | Link | Image |
 | ---- | :----: |
-[Parallax Continuous Rotation Servo](https://www.sparkfun.com/products/16048) | ![Servo](https://i.imgur.com/Eplrtjp.jpg)
-[Dry Food Dispenser](https://www.amazon.com/gp/product/B009Q8PZMK/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Dispenser](https://i.imgur.com/Tdu27sQ.jpg)
-[Tessel 2](https://www.sparkfun.com/products/13841) | ![Tessel 2](https://i.imgur.com/EFFAlj4.jpg)
-[Solder-able Breadboard](https://www.amazon.com/gp/product/B071R3BFNL/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Solder-able Breadboard](https://i.imgur.com/Vipb9nx.jpg)
-Soldering Iron | ![Soldering Iron](https://i.imgur.com/e4BuTGI.jpg)
+[Tessel 2](https://www.sparkfun.com/products/13841) | ![Tessel 2](https://i.imgur.com/EFFAlj4t.jpg?2)
+[Parallax Continuous Rotation Servo](https://www.sparkfun.com/products/16048) | ![Servo](https://i.imgur.com/Eplrtjpt.jpg?2)
+[Dry Food Dispenser](https://www.amazon.com/gp/product/B009Q8PZMK/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Dispenser](https://i.imgur.com/Tdu27sQt.jpg?1)
+[Solder-able Breadboard](https://www.amazon.com/gp/product/B071R3BFNL/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) | ![Solder-able Breadboard](https://i.imgur.com/Vipb9nxs.jpg?2)
+Soldering Iron | ![Soldering Iron](https://i.imgur.com/e4BuTGIt.jpg?1)
 [Jumper Wires](https://www.sparkfun.com/products/12795) | 
 [Resistor 10K Ohm](https://www.sparkfun.com/products/11508) | 
 [Resistor 100 Ohm](https://www.sparkfun.com/products/14493) | 
