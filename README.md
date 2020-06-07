@@ -1,4 +1,5 @@
 # Fat Cat (Tessel)
+Fat 
 ![Fat Cat](https://i.imgur.com/hHxNI6l.png?1)
 
 ## Prerequisites / Dependencies
@@ -8,14 +9,13 @@ To duplicate you will need the following things properly installed on your compu
 * [Node.js](http://nodejs.org/)
 * [Johnny-Five](http://johnny-five.io/api/)
 * [Socket-io](https://socket.io/?ref=cybrhome)
-* [T2 Cli](https://tessel.gitbooks.io/t2-docs/content/API/CLI.html)
+* [t2-cli](https://tessel.gitbooks.io/t2-docs/content/API/CLI.html)
 
 
 ## Installation
 * `git clone <repository-url>` this repository
 * change into the new directory
 * `npm install`
-
 
 ## Parts and Materials
 | Link | Image |
@@ -31,8 +31,20 @@ Soldering Iron | ![Soldering Iron](https://i.imgur.com/e4BuTGIt.jpg?1)
 [LEDs](https://www.sparkfun.com/products/12062) |
 [Button](https://www.sparkfun.com/products/14460) | 
 
+## Setup
+1. Globally install t2-cli: `npm install -g t2-cli`  
+2. Connect Tessel 2 via usb and follow t2 docs to provision and setup wifi: (t2-cli)[https://tessel.gitbooks.io/t2-docs/content/API/CLI.html]  
+3. Create a `.env` file within `client` directory and add the following:  
+```
+REACT_APP_TESSEL_IP = <tessel ip address>
+REACT_APP_SOCKET_PORT = <socket port>
+REACT_APP_PASSCODE = <secret passcode>
+```  
+4. Build UI: `npm run build`  
+5. Deploy code to Tessel: `npm run deploy`
   
 ## Final Product 
 ![FatCat1](https://i.imgur.com/PrWdYnD.jpg?1)
 ![FatCat2](https://i.imgur.com/TFwMps6.jpg?1)
-![FatCat3](https://i.imgur.com/Yl06odx.jpg?2)
+![FatCat3](https://i.imgur.com/Yl06odx.jpg?2)  
+![FatCat - Gif](https://i.imgur.com/ElUjSYGt.gif)
