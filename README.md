@@ -11,7 +11,6 @@ To duplicate you will need the following things properly installed on your compu
 * [Socket-io](https://socket.io/?ref=cybrhome)
 * [t2-cli](https://tessel.gitbooks.io/t2-docs/content/API/CLI.html)
 
-
 ## Installation
 * `git clone <repository-url>` this repository
 * change into the new directory
@@ -43,6 +42,21 @@ REACT_APP_PASSCODE = <secret passcode>
 4. Build UI: `npm run build`  
 5. Deploy code to Tessel: `npm run deploy`
   
+## Testing and Assembly
+The servo frame was built using an old plastic clipboard and some angle brackets. Using a drill and a utility knife I was able to make the screw and led holes and cut away excess pieces of the dispenser to lay the wires through the inside.   
+![clipboard](https://i.imgur.com/aBdjE8mm.jpg)
+![angle](https://i.imgur.com/u1Wmjunm.jpg)
+![drill](https://i.imgur.com/TONINVJm.jpg)  
+   
+![lights](https://i.imgur.com/KZZoJLvm.jpg)
+![backing1](https://i.imgur.com/iSJR40jm.jpg)
+![backing2](https://i.imgur.com/Inqs1Yrm.jpg)  
+  
+After testing the circuit on a breadboard, I duplicated it on a solder-able breadboard to make it more permanent.
+![soldering1](https://i.imgur.com/manmTte.jpg?2)
+![soldering2](https://i.imgur.com/dbdMRFo.jpg?2)  
+  
+
 ## Final Product 
 ![FatCat1](https://i.imgur.com/PrWdYnD.jpg?1)
 ![FatCat2](https://i.imgur.com/TFwMps6.jpg?1)
