@@ -101,9 +101,9 @@ if (board) {
 
 				let timer;
 				if (msg === 'extra') {
-					timer = 5000; // need to find correct timing for rotation
-				} else {
 					timer = 3000; // need to find correct timing for rotation
+				} else {
+					timer = 1000; // need to find correct timing for rotation
 				}
 
 				console.log('timer - ', timer);
