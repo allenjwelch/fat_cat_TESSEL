@@ -48,3 +48,9 @@ REACT_APP_PASSCODE = <secret passcode>
 ![FatCat2](https://i.imgur.com/TFwMps6.jpg?1)
 ![FatCat3](https://i.imgur.com/Yl06odx.jpg?2)  
 ![FatCat - Gif](fatCat.gif)
+  
+### Inspiration  
+I am not the first with this idea, nor will I be the last. I'd like to thank all the others that came before me and from whose code I drew inspiration. Check out these other awesome projects!  
+* [OneTesselAway](https://github.com/robatron/OneTesselAway)  
+* [cat-feeder](https://github.com/Frijol/cat-feeder)  
+* [robokitty](https://github.com/rachelnicole/robokitty)  
