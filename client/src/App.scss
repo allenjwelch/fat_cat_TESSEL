@@ -6,7 +6,10 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
 }
+
+input, select { font-size: 100%; }
 
 .fat-cat {
     text-align: center;
