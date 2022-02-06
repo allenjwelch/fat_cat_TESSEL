@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
-import { Button, DropDown, Input, Loader } from './components';
+import { Button, DropDown, Input, Loader, Scheduler } from './components';
 import './App.scss';
 
 const tesselIP = `${process.env.REACT_APP_TESSEL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
+const usePasscode = false;
 
 const logoArray = [
 	'https://i.imgur.com/cmGfOjg.jpg?1',
@@ -17,10 +18,10 @@ const logoIndex = Math.floor(Math.random() * Math.floor(logoArray.length));
 const App = () => {
 
 	const [status, setStatus] = useState('Disconnected');
-	// const [foodLevel, setFoodLevel] = useState('Low');
 	const [portionSize, setPortionSize] = useState('normal');
+	const [scheduledList, setScheduledList] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [enableFeed, setEnableFeed] = useState(false);
+	const [enableFeed, setEnableFeed] = useState(!usePasscode);
 	const socket = socketIOClient(tesselIP);
 
 	useEffect(() => {
@@ -28,12 +29,16 @@ const App = () => {
 			console.log('status- ',data)
 			setStatus(data);
 		});
-		// socket.on("foodLevel", data => {
-		// 	setFoodLevel(data);
-		// });
 
 		console.log('tesselIP - ', tesselIP);
 	}, []);
+
+	useEffect(() => {
+		console.log('AXW scheduledList - ', scheduledList);
+		if (scheduledList.length > 0) {
+			autoFeed();
+		}
+	}, [scheduledList]);
 
 	const sendFeed = () => {
 		console.log('sending feed...')
@@ -49,6 +54,17 @@ const App = () => {
 		setPortionSize(e.target.value);
 	}
 
+	const autoFeed = () => {
+		scheduledList.forEach((schedule) => {
+			console.log('AXW schedule - ', schedule);
+			console.log('AXW new Date() - ', new Date());
+
+			// use Date.getHours and Date.getMinutes
+			// match those with the hours and min from schedule
+			// if matched, call sendFeed
+		})
+	};
+
 	const checkAuth = (e) => {
 		const input = e.target.value;
 		if (input === process.env.REACT_APP_PASSCODE) {
@@ -56,16 +72,6 @@ const App = () => {
 			setEnableFeed(true);
 		}
 	}
-
-	const displayText = () => {
-		if (status === 'Ready') {
-			return 'Feed'
-		} else if (status === 'Complete') {
-			return 'Done!'
-		} else {
-			return <Loader />
-		}
-	};
 
 	const enableControls = () => {
 		setTimeout(() => {
@@ -80,15 +86,12 @@ const App = () => {
 					<Button
 						className="btn-feed"
 						onClick={() => sendFeed()}
-						text={displayText()}
+						status={'Ready'} // TESTING
 					/>
 
 					<div className="additional-info">
 						<div className="status">
 							<p>Status: <span>{status}</span></p>
-							{/* <p>Food Level: <span className={foodLevel === 'Low' && 'low'}>
-								{foodLevel}
-							</span></p> */}
 						</div>
 
 						<DropDown
@@ -96,6 +99,11 @@ const App = () => {
 							onChange={(e) => selectPortion(e)}
 							defaultValue={portionSize}
 							label="Select Portion Size: "
+						/>
+
+						<Scheduler 
+							scheduledList={scheduledList}
+							setScheduledList={setScheduledList}
 						/>
 					</div>
 				</div>

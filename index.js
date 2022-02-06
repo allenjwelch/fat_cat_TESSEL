@@ -19,10 +19,11 @@ try {
 }
 
 const PORT = process.env.PORT || 8080;
-// const routes = require("./routes/index");
-// app.use(routes);
+const routes = require("./routes/index");
+
 
 const app = express();
+// app.use(routes); // for testing
 app.use('/', express.static(__dirname + '/client/build'));
 
 const server = http.createServer(app);
@@ -138,6 +139,6 @@ if (board) {
 	server.listen(PORT, () => console.log(`Listening on 192.168.0.21:${PORT}`));
 
 } else {
-	server.listen(PORT, () => console.log(`Listening on http://127.0.0.1:${PORT}`));
+	server.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
 }
 
