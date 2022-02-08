@@ -49,7 +49,6 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log('AXW currentTime - scheduledList - ', currentTime, scheduledList);
 		autoFeed(currentTime);
 	}, [currentTime]);
 
@@ -67,14 +66,10 @@ const App = () => {
 	}
 
 	const autoFeed = (currentTime) => {
-		console.log('AXW scheduled - ', scheduledList);
 		if (scheduledList.length > 0) {
-			console.log('AXW time - ', currentTime);
-
 			scheduledList.forEach((schedule) => {		
 				if (schedule === currentTime) {
-					console.log('AXW Time Matched!');
-					console.log('schedule - ', schedule);
+					console.log('time to feed! - ', schedule);
 					sendFeed();
 				}
 			})
