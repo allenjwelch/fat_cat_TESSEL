@@ -14,7 +14,8 @@ input, select { font-size: 100%; }
 .fat-cat {
     text-align: center;
     background: #999;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     position: relative;
 
     .title {

@@ -22,7 +22,10 @@ const App = () => {
 	const [scheduledList, setScheduledList] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [enableFeed, setEnableFeed] = useState(!usePasscode);
+	const [currentTime, setCurrentTime] = useState('00:00');
 	const socket = socketIOClient(tesselIP);
+
+	let timer = null;
 
 	useEffect(() => {
 		socket.on('status', data => {
@@ -30,15 +33,25 @@ const App = () => {
 			setStatus(data);
 		});
 
-		console.log('tesselIP - ', tesselIP);
+		timer = setInterval(() => {
+			const date = new Date();
+			let hours = date.getHours();
+			let minutes = date.getMinutes();
+			try {
+				hours = parseInt(hours) < 10 ? `0${hours}` : hours;
+				minutes = parseInt(minutes) < 10 ? `0${minutes}` : minutes;
+			} catch (err) {
+				console.warn('time conversion error');
+			}
+			
+			setCurrentTime(`${hours}:${minutes}`);
+		}, 60000);
 	}, []);
 
 	useEffect(() => {
-		console.log('AXW scheduledList - ', scheduledList);
-		if (scheduledList.length > 0) {
-			autoFeed();
-		}
-	}, [scheduledList]);
+		console.log('AXW currentTime - scheduledList - ', currentTime, scheduledList);
+		autoFeed(currentTime);
+	}, [currentTime]);
 
 	const sendFeed = () => {
 		console.log('sending feed...')
@@ -50,19 +63,22 @@ const App = () => {
 	}
 
 	const selectPortion = (e) => {
-		console.log(e.target.value);
 		setPortionSize(e.target.value);
 	}
 
-	const autoFeed = () => {
-		scheduledList.forEach((schedule) => {
-			console.log('AXW schedule - ', schedule);
-			console.log('AXW new Date() - ', new Date());
+	const autoFeed = (currentTime) => {
+		console.log('AXW scheduled - ', scheduledList);
+		if (scheduledList.length > 0) {
+			console.log('AXW time - ', currentTime);
 
-			// use Date.getHours and Date.getMinutes
-			// match those with the hours and min from schedule
-			// if matched, call sendFeed
-		})
+			scheduledList.forEach((schedule) => {		
+				if (schedule === currentTime) {
+					console.log('AXW Time Matched!');
+					console.log('schedule - ', schedule);
+					sendFeed();
+				}
+			})
+		}
 	};
 
 	const checkAuth = (e) => {
@@ -86,7 +102,7 @@ const App = () => {
 					<Button
 						className="btn-feed"
 						onClick={() => sendFeed()}
-						status={'Ready'} // TESTING
+						status={status}
 					/>
 
 					<div className="additional-info">
