@@ -1,13 +1,32 @@
-.btn {
-    
+.scheduler {
+    h4 {
+        margin: 0;
+    }
+
+    .display-time {
+        display: inline-block;
+        margin: 0 auto;
+        width: auto;
+        line-height: 10px;
+        padding: 8px;
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 5px;
+    }
+
+    .time-container {
+        padding: 6px;
+    }
+
     button {
         position: relative;
         overflow: hidden;
-        width: 200px;
+        min-width: 80px;
+        width: auto;
         height: 40px;
         border: 2px solid #000;
         border-radius: 5px;
-        margin: 0px auto;
+        margin: 12px auto;
         font-weight: 600;
         font-size: inherit;
         color: #000;
@@ -26,15 +45,68 @@
         }
     }
 
-    &.disabled {
-        button {
-            &:hover, &:active {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                color: #000;
-                background: #fff;
-                .cs-loader-inner  {
-                    color: #000;
-                }
-            }
+    #btn-cancel, #btn-submit {
+        position: relative;
+        height: 26px;
+        width: 26px;
+        border: 2px solid #000;
+        border-radius: 16px;
+        display: inline-block;
+        margin: 0 8px;
+        background: #fff;
+    }
+
+    #btn-cancel {
+        &::before {
+            content: '';
+            position: absolute;
+            background: #d61414;
+            height: 20px;
+            width: 2px;
+            top: 12%;
+            left: 46%;
+            transform: rotate(-45deg);
         }
+
+        &::after {
+            content: '';
+            position: absolute;
+            background: #d61414;
+            height: 20px;
+            width: 2px;
+            top: 12%;
+            right: 45%;
+            transform: rotate(45deg);
+        }
+    }
+
+    #btn-submit {
+        &::before {
+            content: '';
+            position: absolute;
+            background: #31b111;
+            height: 8px;
+            width: 2px;
+            top: 50%;
+            left: 28%;
+            transform: rotate(-25deg);
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            background: #31b111;
+            height: 18px;
+            width: 2px;
+            top: 20%;
+            right: 40%;
+            transform: rotate(30deg);
+        }
+    }
+
+    #feed-time {
+        height: 30px;
+        border: 2px solid #000;
+        border-radius: 5px;
     }
 }

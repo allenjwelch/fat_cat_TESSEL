@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
-import { Button, DropDown, Input, Loader } from './components';
+import { Button, DropDown, Input, Loader, Scheduler } from './components';
 import './App.scss';
 
+const LOCAL_TESTING = false;
+const usePasscode = false;
+
 const tesselIP = `${process.env.REACT_APP_TESSEL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
+const localIP = `${process.env.REACT_APP_LOCAL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
 
 const logoArray = [
 	'https://i.imgur.com/cmGfOjg.jpg?1',
@@ -15,25 +19,53 @@ const logoArray = [
 const logoIndex = Math.floor(Math.random() * Math.floor(logoArray.length));
 
 const App = () => {
-
 	const [status, setStatus] = useState('Disconnected');
-	// const [foodLevel, setFoodLevel] = useState('Low');
 	const [portionSize, setPortionSize] = useState('normal');
+	const [scheduledList, setScheduledList] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [enableFeed, setEnableFeed] = useState(false);
-	const socket = socketIOClient(tesselIP);
+	const [enableFeed, setEnableFeed] = useState(!usePasscode);
+	const [currentTime, setCurrentTime] = useState('00:00');
+	const socket = socketIOClient(LOCAL_TESTING ? localIP : tesselIP);
 
 	useEffect(() => {
 		socket.on('status', data => {
-			console.log('status- ',data)
+			console.log('status- ', data)
 			setStatus(data);
 		});
-		// socket.on("foodLevel", data => {
-		// 	setFoodLevel(data);
-		// });
 
-		console.log('tesselIP - ', tesselIP);
+		socket.on('readFile', data => {
+			console.log('reading file - ', data);
+			if (data !== '') {
+				const filteredData = data.split(',').filter(date => date !== '' || date !== ' ')
+				setScheduledList([...filteredData]);
+			} else {
+				setScheduledList([]);
+			}
+		})
+
+		setInterval(() => {
+			const date = new Date();
+			let hours = date.getHours();
+			let minutes = date.getMinutes();
+			try {
+				hours = parseInt(hours) < 10 ? `0${hours}` : hours;
+				minutes = parseInt(minutes) < 10 ? `0${minutes}` : minutes;
+			} catch (err) {
+				console.warn('time conversion error');
+			}
+			
+			setCurrentTime(`${hours}:${minutes}`);
+		}, 60000);
 	}, []);
+
+	useEffect(() => {
+		autoFeed(currentTime);
+	}, [currentTime]);
+
+	const writeToFile = (list) => {
+		console.log('writeToFile - ', list);
+		socket.emit('writeFile', list)
+	}
 
 	const sendFeed = () => {
 		console.log('sending feed...')
@@ -45,9 +77,19 @@ const App = () => {
 	}
 
 	const selectPortion = (e) => {
-		console.log(e.target.value);
 		setPortionSize(e.target.value);
 	}
+
+	const autoFeed = (currentTime) => {
+		if (scheduledList.length > 0) {
+			scheduledList.forEach((schedule) => {		
+				if (schedule === currentTime) {
+					console.log('time to feed! - ', schedule);
+					sendFeed();
+				}
+			})
+		}
+	};
 
 	const checkAuth = (e) => {
 		const input = e.target.value;
@@ -56,16 +98,6 @@ const App = () => {
 			setEnableFeed(true);
 		}
 	}
-
-	const displayText = () => {
-		if (status === 'Ready') {
-			return 'Feed'
-		} else if (status === 'Complete') {
-			return 'Done!'
-		} else {
-			return <Loader />
-		}
-	};
 
 	const enableControls = () => {
 		setTimeout(() => {
@@ -80,15 +112,12 @@ const App = () => {
 					<Button
 						className="btn-feed"
 						onClick={() => sendFeed()}
-						text={displayText()}
+						status={status}
 					/>
 
 					<div className="additional-info">
 						<div className="status">
 							<p>Status: <span>{status}</span></p>
-							{/* <p>Food Level: <span className={foodLevel === 'Low' && 'low'}>
-								{foodLevel}
-							</span></p> */}
 						</div>
 
 						<DropDown
@@ -96,6 +125,12 @@ const App = () => {
 							onChange={(e) => selectPortion(e)}
 							defaultValue={portionSize}
 							label="Select Portion Size: "
+						/>
+
+						<Scheduler 
+							scheduledList={scheduledList}
+							setScheduledList={setScheduledList}
+							writeToFile={writeToFile}
 						/>
 					</div>
 				</div>

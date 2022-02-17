@@ -6,12 +6,16 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
 }
+
+input, select { font-size: 100%; color: #000;}
 
 .fat-cat {
     text-align: center;
     background: #999;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     position: relative;
 
     .title {

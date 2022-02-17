@@ -1,13 +1,37 @@
 const express = require('express');
 const http = require("http");
+const os = require("os");
 const socketIo = require("socket.io");
 const five = require("johnny-five");
+const fs = require('fs')
+const path = require('path');
+const appRoot = path.resolve(__dirname);
+
+const PORT = process.env.PORT || 8080;
+const PROFILE = process.env.PROFILE || 'production'
+
+let filePath = `${appRoot}/auto-feed.txt`;
 
 require('dotenv').config();
 
+console.log('appRoot - ', appRoot);
+
+const app = express();
+// const routes = require("./routes/index");
+// app.use(routes); // for testing
+
+if (PROFILE === 'local') {
+	console.log('starting server locally...');
+	filePath = '/auto-feed.txt';
+} else {
+	app.use('/', express.static(__dirname + '/client/build')); // COMMENT WHEN RUNNING LOCALLY
+}
+
+const server = http.createServer(app);
+const socketIO = socketIo(server);
+
 let Tessel = null;
 let board;
-let interval;
 
 try {
 	Tessel = require('tessel-io');
@@ -18,45 +42,45 @@ try {
 	console.log('Tessel board not initialized');
 }
 
-const PORT = process.env.PORT || 8080;
-// const routes = require("./routes/index");
-// app.use(routes);
+const readFile = (socket) => {
+	try {
+		const data = fs.readFileSync(filePath, 'utf8')
+		console.log(`file read from ${filePath} - ${data}`);
+		socket.emit("status", "Ready");
+		return data;
+	} catch (err) {
+		console.error(err);
+		socket.emit("status", "Ready");
+		return '';
+	}
+};
 
-const app = express();
-app.use('/', express.static(__dirname + '/client/build'));
-
-const server = http.createServer(app);
-const socketIO = socketIo(server);
+const writeFile = (data, socket) => {
+	try {
+		fs.writeFileSync(filePath, data)
+		console.log(`file written successfully to ${filePath}`)
+		socket.emit('readFile', readFile(socket));
+	} catch (err) {
+		console.error(err)
+	}
+};
 
 if (board) {
 	board.on("ready", (e) => {
 		const leds = new five.Leds(['b6', 'b5', 'b4']);
 		const button = new five.Button('a2');
 		const servo = new five.Servo({
-			pin: 'a6', 
+			pin: 'a6',
 			type: 'continuous'
 		});
 
 		leds.off();
 
-		// const getFoodLevelAndEmit = socket => {
-		// 	let foodLevel = 10;
-		// 	let foodStreturn sleep(2000).then(v => {
-		// 		console.log('led - off');
-		// 		led.off()
-		// 	})statusMsg = 'Good';
-		// 	if (foodLevel > 5) {
-		// 		foodStatusMsg = 'Low'
-		// 	}
-		// 	// Emitting a new message. Will be consumed by the client
-		// 	socket.emit("foodLevel", foodStatusMsg);
-		// };
-
 		button.on("press", () => {
 			console.log('servo and led(b4) - ON')
 			servo.cw(1);
 			leds[2].on();
-		}); 
+		});
 		button.on("release", () => {
 			console.log('servo and led(b4) - OFF')
 			servo.stop();
@@ -66,14 +90,11 @@ if (board) {
 		socketIO.on("connection", (socket) => {
 			console.log("New client connected");
 			socket.emit("status", 'Ready');
+			socket.emit("readFile", readFile(socket));
 
-			// if (interval) {
-			// 	clearInterval(interval);
-			// }
-			// interval = setInterval(() => getFoodLevelAndEmit(socket), 1000);
-			socket.on("disconnect", () => {
-				console.log("Client disconnected");
-				// clearInterval(interval);
+			socket.on("writeFile", (data) => {
+				socket.emit("status", "Adding Schedule...");
+				writeFile(data, socket);
 			});
 
 			socket.on('feed', (msg) => {
@@ -90,16 +111,20 @@ if (board) {
 				console.log('timer - ', timer);
 
 				feedLoop(timer, socket);
-			})
+			});
+
+			socket.on("disconnect", () => {
+				console.log("Client disconnected");
+			});
 		});
-		
+
 		const sleep = ms => {
 			return new Promise(resolve => setTimeout(resolve, ms))
 		}
 
 		const runLed = (led) => {
-				console.log('led - on');
-				led.on();
+			console.log('led - on');
+			led.on();
 			return sleep(1000).then(v => {
 				console.log('led - off');
 				led.off()
@@ -127,7 +152,7 @@ if (board) {
 			servo.cw(1);
 			leds[2].on();
 			return sleep(timer).then(v => {
-				console.log('servo - OFF'); 
+				console.log('servo - OFF');
 				servo.stop();
 				leds.off();
 			})
@@ -138,6 +163,29 @@ if (board) {
 	server.listen(PORT, () => console.log(`Listening on 192.168.0.21:${PORT}`));
 
 } else {
-	server.listen(PORT, () => console.log(`Listening on http://127.0.0.1:${PORT}`));
+	socketIO.on("connection", (socket) => {
+		console.log("New client connected on local server");
+		socket.emit("status", 'Ready');
+		socket.emit("readFile", readFile(socket));
+
+		socket.on("writeFile", (data) => {
+			socket.emit("status", "Adding Schedule...");
+			writeFile(data, socket);
+		});
+
+		socket.on('feed', (msg) => {
+			console.log('portion size: ', msg)
+			socket.emit('status', 'Feeding...');
+		});
+
+		socket.on("disconnect", () => {
+			console.log("Client disconnected");
+		});
+	});
+
+	server.listen(PORT, () => {
+		console.log(`http://${os.hostname()}.local`);
+		console.log(`Listening on http://localhost:${PORT}`)
+	});
 }
 
