@@ -1,6 +1,6 @@
 {
   "name": "fat_cat_UI",
-  "version": "2.0.0",
+  "version": "1.2.0",
   "private": true,
   "dependencies": {
     "dotenv": "^8.2.0",
