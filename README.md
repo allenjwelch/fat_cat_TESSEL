@@ -66,7 +66,7 @@ After testing the circuit on a breadboard, I duplicated it on a solder-able brea
   
 ## ChangeLog
 Tessel server v1.1.0 - Adds socket listeners for reading/writing to interal file for scheduled feed times  
-Client v1.1.0 - Corrects auto zoom for inputs on mobile and removes passcode screen
+Client v1.1.0 - Corrects auto zoom for inputs on mobile and removes passcode screen  
 Client v1.2.0 - Adds scheduler component for auto feed times
 
   
