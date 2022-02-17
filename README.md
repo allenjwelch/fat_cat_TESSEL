@@ -31,7 +31,7 @@ Soldering Iron | ![Soldering Iron](https://i.imgur.com/e4BuTGIt.jpg?1)
 [Button](https://www.sparkfun.com/products/14460) | 
 
 ## Setup
-1. Globally install t2-cli: `npm install -g t2-cli`  
+1. To setup tessel, go to [Tessel Installation Docs](http://tessel.github.io/t2-start/) and follow instructions for your OS
 2. Connect Tessel 2 via usb and follow t2 docs to provision and setup wifi: (t2-cli)[https://tessel.gitbooks.io/t2-docs/content/API/CLI.html]  
 3. Create a `.env` file within `client` directory and add the following:  
 ```

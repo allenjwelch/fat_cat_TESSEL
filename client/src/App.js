@@ -3,8 +3,11 @@ import socketIOClient from "socket.io-client";
 import { Button, DropDown, Input, Loader, Scheduler } from './components';
 import './App.scss';
 
-const tesselIP = `${process.env.REACT_APP_TESSEL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
+const LOCAL_TESTING = false;
 const usePasscode = false;
+
+const tesselIP = `${process.env.REACT_APP_TESSEL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
+const localIP = `${process.env.REACT_APP_LOCAL_IP}:${process.env.REACT_APP_SOCKET_PORT}`;
 
 const logoArray = [
 	'https://i.imgur.com/cmGfOjg.jpg?1',
@@ -16,24 +19,31 @@ const logoArray = [
 const logoIndex = Math.floor(Math.random() * Math.floor(logoArray.length));
 
 const App = () => {
-
 	const [status, setStatus] = useState('Disconnected');
 	const [portionSize, setPortionSize] = useState('normal');
 	const [scheduledList, setScheduledList] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [enableFeed, setEnableFeed] = useState(!usePasscode);
 	const [currentTime, setCurrentTime] = useState('00:00');
-	const socket = socketIOClient(tesselIP);
-
-	let timer = null;
+	const socket = socketIOClient(LOCAL_TESTING ? localIP : tesselIP);
 
 	useEffect(() => {
 		socket.on('status', data => {
-			console.log('status- ',data)
+			console.log('status- ', data)
 			setStatus(data);
 		});
 
-		timer = setInterval(() => {
+		socket.on('readFile', data => {
+			console.log('reading file - ', data);
+			if (data !== '') {
+				const filteredData = data.split(',').filter(date => date !== '' || date !== ' ')
+				setScheduledList([...filteredData]);
+			} else {
+				setScheduledList([]);
+			}
+		})
+
+		setInterval(() => {
 			const date = new Date();
 			let hours = date.getHours();
 			let minutes = date.getMinutes();
@@ -51,6 +61,11 @@ const App = () => {
 	useEffect(() => {
 		autoFeed(currentTime);
 	}, [currentTime]);
+
+	const writeToFile = (list) => {
+		console.log('writeToFile - ', list);
+		socket.emit('writeFile', list)
+	}
 
 	const sendFeed = () => {
 		console.log('sending feed...')
@@ -115,6 +130,7 @@ const App = () => {
 						<Scheduler 
 							scheduledList={scheduledList}
 							setScheduledList={setScheduledList}
+							writeToFile={writeToFile}
 						/>
 					</div>
 				</div>
