@@ -1,6 +1,6 @@
 {
     "name": "fat_cat_TESSEL",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "device code for tessel 2 fat cat web based cat feeder",
     "main": "index.js",
     "scripts": {
