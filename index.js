@@ -47,8 +47,9 @@ try {
 
 const readFile = (socket) => {
 	try {
-		const data = fs.readFileSync(filePath, 'utf8')
-		scheduledList = [data];
+		const data = fs.readFileSync(filePath, 'utf8');
+
+		scheduledList = data.split(',');
 		console.log('sever scheduledList - ', scheduledList);
 		console.log(`file read from ${filePath} - ${data}`);
 		socket.emit("status", "Ready");
