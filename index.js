@@ -5,6 +5,7 @@ const socketIo = require("socket.io");
 const five = require("johnny-five");
 const fs = require('fs')
 const path = require('path');
+const moment = require('moment-timezone');
 const appRoot = path.resolve(__dirname);
 
 const PORT = process.env.PORT || 8080;
@@ -33,6 +34,8 @@ const socketIO = socketIo(server);
 let Tessel = null;
 let board;
 
+let scheduledList = [];
+
 try {
 	Tessel = require('tessel-io');
 	board = new five.Board({
@@ -45,6 +48,8 @@ try {
 const readFile = (socket) => {
 	try {
 		const data = fs.readFileSync(filePath, 'utf8')
+		scheduledList = [data];
+		console.log('sever scheduledList - ', scheduledList);
 		console.log(`file read from ${filePath} - ${data}`);
 		socket.emit("status", "Ready");
 		return data;
@@ -67,6 +72,12 @@ const writeFile = (data, socket) => {
 
 if (board) {
 	board.on("ready", (e) => {
+		setInterval(() => {
+			const date = new Date();
+			const time = moment().tz("America/New_York").format("HH:mm");
+			autoFeed(time);
+		}, 60000);
+
 		const leds = new five.Leds(['b6', 'b5', 'b4']);
 		const button = new five.Button('a2');
 		const servo = new five.Servo({
@@ -81,6 +92,7 @@ if (board) {
 			servo.cw(1);
 			leds[2].on();
 		});
+
 		button.on("release", () => {
 			console.log('servo and led(b4) - OFF')
 			servo.stop();
@@ -109,7 +121,6 @@ if (board) {
 				}
 
 				console.log('timer - ', timer);
-
 				feedLoop(timer, socket);
 			});
 
@@ -120,7 +131,7 @@ if (board) {
 
 		const sleep = ms => {
 			return new Promise(resolve => setTimeout(resolve, ms))
-		}
+		};
 
 		const runLed = (led) => {
 			console.log('led - on');
@@ -129,7 +140,17 @@ if (board) {
 				console.log('led - off');
 				led.off()
 			})
-		}
+		};
+
+		const autoFeed = (currentTime) => {
+			if (scheduledList.length > 0) {
+				scheduledList.forEach((schedule) => {	
+					if (schedule === currentTime) {
+						feedLoop(1000);
+					}
+				})
+			}
+		};
 
 		const feedLoop = async (timer, socket) => {
 			console.log('Start feedLoop...')
@@ -142,9 +163,9 @@ if (board) {
 			await runServo(timer);
 
 			console.log('feeding complete!')
-			socket.emit('status', 'Ready');
-
-			console.log('End feedLoop.')
+			if (socket) {
+				socket.emit('status', 'Ready');
+			}
 		}
 
 		const runServo = async (timer) => {
