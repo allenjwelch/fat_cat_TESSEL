@@ -24,7 +24,6 @@ const App = () => {
 	const [scheduledList, setScheduledList] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [enableFeed, setEnableFeed] = useState(!usePasscode);
-	const [currentTime, setCurrentTime] = useState('00:00');
 	const socket = socketIOClient(LOCAL_TESTING ? localIP : tesselIP);
 
 	useEffect(() => {
@@ -42,25 +41,7 @@ const App = () => {
 				setScheduledList([]);
 			}
 		})
-
-		setInterval(() => {
-			const date = new Date();
-			let hours = date.getHours();
-			let minutes = date.getMinutes();
-			try {
-				hours = parseInt(hours) < 10 ? `0${hours}` : hours;
-				minutes = parseInt(minutes) < 10 ? `0${minutes}` : minutes;
-			} catch (err) {
-				console.warn('time conversion error');
-			}
-			
-			setCurrentTime(`${hours}:${minutes}`);
-		}, 60000);
 	}, []);
-
-	useEffect(() => {
-		autoFeed(currentTime);
-	}, [currentTime]);
 
 	const writeToFile = (list) => {
 		console.log('writeToFile - ', list);
@@ -79,17 +60,6 @@ const App = () => {
 	const selectPortion = (e) => {
 		setPortionSize(e.target.value);
 	}
-
-	const autoFeed = (currentTime) => {
-		if (scheduledList.length > 0) {
-			scheduledList.forEach((schedule) => {		
-				if (schedule === currentTime) {
-					console.log('time to feed! - ', schedule);
-					sendFeed();
-				}
-			})
-		}
-	};
 
 	const checkAuth = (e) => {
 		const input = e.target.value;
