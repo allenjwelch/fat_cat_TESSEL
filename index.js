@@ -182,7 +182,7 @@ if (board) {
 
 	});
 
-	server.listen(PORT, () => console.log(`Listening on 192.168.0.21:${PORT}`));
+	server.listen(PORT, () => console.log(`Listening on http://${os.networkInterfaces().wlan0[0].address}:${PORT}`));
 
 } else {
 	socketIO.on("connection", (socket) => {
@@ -206,8 +206,8 @@ if (board) {
 	});
 
 	server.listen(PORT, () => {
-		console.log(`http://${os.hostname()}.local`);
-		console.log(`Listening on http://localhost:${PORT}`)
+		console.log(`Listening on http://${os.hostname()}.local:${PORT}`);
+		console.log(`Listening on http://${os.networkInterfaces().wlan0[0].address}:${PORT}`);
 	});
 }
 
