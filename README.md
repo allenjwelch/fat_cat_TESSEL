@@ -41,6 +41,14 @@ REACT_APP_PASSCODE = <secret passcode>
 ```  
 4. Build UI: `npm run build`  
 5. Deploy code to Tessel: `npm run deploy`
+
+## Troubleshooting  
+- Wifi Connection: 
+  List all available networks - `t2 wifi -l`
+  Connect to network = `t2 wifi -n "network name" -p "networkpassword"`
+  
+  If tessel ip address has changed, update in `.env` file*
+  *Updated to use `bishop.local` (name of tessel) instead of ever changing ip address
   
 ## Testing and Assembly
 The servo frame was built using an old plastic clipboard and some angle brackets. Using a drill and a utility knife I was able to make the screw and led holes and cut away excess pieces of the dispenser to lay the wires through the inside.   
